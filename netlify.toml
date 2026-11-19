@@ -1,0 +1,21 @@
+# Deploy na Netlify: o site (React/Vite) e a API (Express como função serverless).
+[build]
+  command = "npm run build"
+  publish = "frontend/dist"
+
+[functions]
+  directory = "netlify/functions"
+  node_bundler = "esbuild"
+  external_node_modules = ["@prisma/client", ".prisma", "@prisma/adapter-pg", "pg", "pino", "pino-http"]
+
+# Todas as chamadas /api/* vão para a função "api" (Express).
+[[redirects]]
+  from = "/api/*"
+  to = "/.netlify/functions/api/:splat"
+  status = 200
+
+# React Router: qualquer outra rota devolve o index.html (SPA).
+[[redirects]]
+  from = "/*"
+  to = "/index.html"
+  status = 200
