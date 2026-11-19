@@ -1,0 +1,15 @@
+{% extends "base.html" %}
+{% from "partials/_pets.html" import cachorro_dormindo %}
+{% block titulo %}{{ titulo }}{% endblock %}
+{% block conteudo %}
+<div class="container py-5 text-center">
+  {{ cachorro_dormindo("mb-2") }}
+  <p class="titulo-pet display-4 mb-0">{{ codigo }}</p>
+  <h1 class="h2">{{ titulo }}</h1>
+  <p class="texto-suave mx-auto medida">{{ mensagem }}</p>
+  <div class="d-flex justify-content-center gap-2 mt-3">
+    <a class="btn btn-ap" href="{{ url_for('mural.index') }}">Ir para o mural</a>
+    <a class="btn btn-contorno" href="{{ url_for('main.index') }}">Página inicial</a>
+  </div>
+</div>
+{% endblock %}
