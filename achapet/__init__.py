@@ -19,6 +19,13 @@ def create_app(config_name: str | None = None) -> Flask:
     app = Flask(__name__)
     app.config.from_object(configs[config_name])
 
+    uri = app.config.get("SQLALCHEMY_DATABASE_URI") or ""
+    if not uri.startswith("postgresql"):
+        raise RuntimeError(
+            "DATABASE_URL não configurada. Copie a URI do 'Session pooler' do Supabase "
+            "(botão Connect) para o arquivo .env, trocando [YOUR-PASSWORD] pela senha do banco."
+        )
+
     # 1) Extensões (cada uma tem seu init_app em achapet/ext)
     from achapet.ext import csrf, db, logging, login, migrate, storage
 
