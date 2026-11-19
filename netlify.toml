@@ -3,10 +3,15 @@
   command = "npm run build"
   publish = "frontend/dist"
 
+[build.environment]
+  NODE_VERSION = "22"
+
 [functions]
   directory = "netlify/functions"
   node_bundler = "esbuild"
-  external_node_modules = ["@prisma/client", ".prisma", "@prisma/adapter-pg", "pg", "pino", "pino-http"]
+  external_node_modules = ["@prisma/client", "@prisma/adapter-pg", "pg", "pino", "pino-http"]
+  # Cliente do Prisma gerado no build (fica fora do pacote @prisma/client).
+  included_files = ["node_modules/.prisma/**", "node_modules/@prisma/client/runtime/**"]
 
 # Todas as chamadas /api/* vão para a função "api" (Express).
 [[redirects]]
