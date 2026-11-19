@@ -8,3 +8,5 @@ coverage/
 .vercel/
 backend/src/generated/
 dev-dist/
+venv/
+__pycache__/
