@@ -1,0 +1,153 @@
+// =====================================================================
+// AchaPet — modelo de dados para o Prisma (ORM)
+// Espelha exatamente o modelo físico em migrations/0_modelo_fisico.
+// Os nomes dos campos seguem as colunas do banco (snake_case).
+//
+// O que o Prisma não representa e fica só no SQL (migrations):
+//   - índice único em lower(email) e índices GIST espaciais;
+//   - CHECKs (tipo, status, espécie, porte, sexo, telefone, UF...);
+//   - triggers, a view vw_anuncio_publico e as funções de busca.
+// As colunas GEOGRAPHY aparecem como Unsupported: elas são gravadas e lidas
+// com SQL parametrizado ($queryRaw) usando funções do PostGIS.
+// =====================================================================
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "postgresql"
+}
+
+model Usuario {
+  id               String         @id @default(dbgenerated("gen_random_uuid()")) @db.Uuid
+  nome             String         @db.VarChar(100)
+  email            String         @db.VarChar(254)
+  senha_hash       String?        @db.VarChar(255)
+  telefone         String         @db.VarChar(13)
+  perfil           String         @default("pessoa") @db.VarChar(10)
+  verificado       Boolean        @default(false)
+  papel            String         @default("usuario") @db.VarChar(10)
+  aceite_termos_em DateTime       @db.Timestamptz(6)
+  criado_em        DateTime       @default(now()) @db.Timestamptz(6)
+  atualizado_em    DateTime       @default(now()) @db.Timestamptz(6)
+  anuncios         Anuncio[]
+  denuncias_feitas Denuncia[]     @relation("denunciante")
+  denuncias_moderadas Denuncia[]  @relation("moderador")
+  avistamentos     Avistamento[]
+  alertas          AlertaRegiao[]
+
+  @@map("usuario")
+}
+
+model Cor {
+  id       Int          @id @default(autoincrement()) @db.SmallInt
+  nome     String       @unique(map: "cor_nome_uk") @db.VarChar(20)
+  anuncios AnuncioCor[]
+
+  @@map("cor")
+}
+
+model Anuncio {
+  id              BigInt                                @id @default(autoincrement())
+  codigo          String                                @unique(map: "anuncio_codigo_uk") @default(dbgenerated("gerar_codigo()")) @db.VarChar(8)
+  usuario_id      String                                @db.Uuid
+  tipo            String                                @db.VarChar(10)
+  status          String                                @default("ativo") @db.VarChar(12)
+  especie         String                                @db.VarChar(10)
+  porte           String                                @db.VarChar(7)
+  sexo            String                                @default("nao_sei") @db.VarChar(7)
+  nome_pet        String?                               @db.VarChar(60)
+  raca            String?                               @db.VarChar(60)
+  descricao       String?                               @db.VarChar(1000)
+  detalhe_oculto  String?                               @db.VarChar(200)
+  data_ocorrencia DateTime                              @db.Date
+  localizacao     Unsupported("geography(Point, 4326)")
+  bairro          String?                               @db.VarChar(80)
+  cidade          String?                               @db.VarChar(80)
+  uf              String?                               @db.Char(2)
+  expira_em       DateTime                              @default(dbgenerated("(now() + '30 days'::interval)")) @db.Timestamptz(6)
+  reencontrado_em DateTime?                             @db.Timestamptz(6)
+  criado_em       DateTime                              @default(now()) @db.Timestamptz(6)
+  atualizado_em   DateTime                              @default(now()) @db.Timestamptz(6)
+  usuario         Usuario                               @relation(fields: [usuario_id], references: [id], onDelete: Cascade, map: "anuncio_usuario_fk")
+  fotos           Foto[]
+  cores           AnuncioCor[]
+  denuncias       Denuncia[]
+  avistamentos    Avistamento[]
+
+  @@index([usuario_id], map: "anuncio_usuario_ix")
+  @@map("anuncio")
+}
+
+model Foto {
+  id         BigInt   @id @default(autoincrement())
+  anuncio_id BigInt
+  caminho    String   @db.VarChar(300)
+  ordem      Int      @default(1) @db.SmallInt
+  criado_em  DateTime @default(now()) @db.Timestamptz(6)
+  anuncio    Anuncio  @relation(fields: [anuncio_id], references: [id], onDelete: Cascade, map: "foto_anuncio_fk")
+
+  @@unique([anuncio_id, ordem], map: "foto_ordem_uk")
+  @@map("foto")
+}
+
+model AnuncioCor {
+  anuncio_id BigInt
+  cor_id     Int     @db.SmallInt
+  anuncio    Anuncio @relation(fields: [anuncio_id], references: [id], onDelete: Cascade, map: "anuncio_cor_anuncio_fk")
+  cor        Cor     @relation(fields: [cor_id], references: [id], map: "anuncio_cor_cor_fk")
+
+  @@id([anuncio_id, cor_id], map: "anuncio_cor_pk")
+  @@index([cor_id], map: "anuncio_cor_cor_ix")
+  @@map("anuncio_cor")
+}
+
+model Denuncia {
+  id             BigInt    @id @default(autoincrement())
+  anuncio_id     BigInt
+  denunciante_id String?   @db.Uuid
+  motivo         String    @db.VarChar(20)
+  detalhe        String?   @db.VarChar(500)
+  situacao       String    @default("pendente") @db.VarChar(12)
+  moderador_id   String?   @db.Uuid
+  analisada_em   DateTime? @db.Timestamptz(6)
+  criado_em      DateTime  @default(now()) @db.Timestamptz(6)
+  anuncio        Anuncio   @relation(fields: [anuncio_id], references: [id], onDelete: Cascade, map: "denuncia_anuncio_fk")
+  denunciante    Usuario?  @relation("denunciante", fields: [denunciante_id], references: [id], onDelete: SetNull, map: "denuncia_denunciante_fk")
+  moderador      Usuario?  @relation("moderador", fields: [moderador_id], references: [id], onDelete: SetNull, map: "denuncia_moderador_fk")
+
+  @@unique([anuncio_id, denunciante_id], map: "denuncia_unica_uk")
+  @@map("denuncia")
+}
+
+/// Funcionalidade complementar: "vi este animal aqui".
+model Avistamento {
+  id          BigInt                                @id @default(autoincrement())
+  anuncio_id  BigInt
+  usuario_id  String?                               @db.Uuid
+  localizacao Unsupported("geography(Point, 4326)")
+  visto_em    DateTime                              @db.Timestamptz(6)
+  comentario  String?                               @db.VarChar(300)
+  criado_em   DateTime                              @default(now()) @db.Timestamptz(6)
+  anuncio     Anuncio                               @relation(fields: [anuncio_id], references: [id], onDelete: Cascade, map: "avistamento_anuncio_fk")
+  usuario     Usuario?                              @relation(fields: [usuario_id], references: [id], onDelete: SetNull, map: "avistamento_usuario_fk")
+
+  @@map("avistamento")
+}
+
+/// Funcionalidade complementar: área monitorada para alertas por e-mail.
+model AlertaRegiao {
+  id         BigInt                                @id @default(autoincrement())
+  usuario_id String                                @db.Uuid
+  centro     Unsupported("geography(Point, 4326)")
+  raio_m     Int                                   @default(3000)
+  especie    String?                               @db.VarChar(10)
+  tipo       String?                               @db.VarChar(10)
+  ativo      Boolean                               @default(true)
+  criado_em  DateTime                              @default(now()) @db.Timestamptz(6)
+  usuario    Usuario                               @relation(fields: [usuario_id], references: [id], onDelete: Cascade, map: "alerta_regiao_usuario_fk")
+
+  @@index([usuario_id], map: "alerta_regiao_usuario_ix")
+  @@map("alerta_regiao")
+}
