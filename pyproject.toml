@@ -1,0 +1,62 @@
+[build-system]
+requires = ["setuptools>=68"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "achapet"
+version = "1.0.0"
+description = "AchaPet - rede geolocalizada de animais perdidos e encontrados"
+readme = "README.md"
+requires-python = ">=3.11"
+authors = [
+    { name = "Ricardo Caldara Pinto" },
+    { name = "Ana Clara Costa Luksik Schmidt" },
+    { name = "Bernardo Santos Proti" },
+]
+dependencies = [
+    "flask>=3.0",
+    "flask-sqlalchemy>=3.1",
+    "flask-migrate>=4.0",
+    "flask-wtf>=1.2",
+    "flask-login>=0.6",
+    "email-validator>=2.0",
+    "geoalchemy2>=0.15",
+    "shapely>=2.0",
+    "psycopg[binary]>=3.1",
+    "python-dotenv>=1.0",
+    "pillow>=10.0",
+    "qrcode>=7.4",
+    "requests>=2.31",
+]
+
+[project.optional-dependencies]
+dev = [
+    "ipython",
+    "black",
+    "flake8",
+    "invoke",
+]
+test = [
+    "pytest>=8.3",
+    "pytest-cov>=5.0",
+    "pytest-flask",
+]
+
+[tool.setuptools.packages.find]
+include = ["achapet*"]
+
+[tool.setuptools.package-data]
+achapet = ["templates/**/*", "static/**/*"]
+
+[tool.pytest.ini_options]
+testpaths = ["tests"]
+addopts = "-q"
+filterwarnings = ["ignore::DeprecationWarning"]
+
+[tool.coverage.run]
+source = ["achapet"]
+omit = ["achapet/cli.py"]
+
+[tool.black]
+line-length = 100
+target-version = ["py311"]

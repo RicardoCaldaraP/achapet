@@ -1,0 +1,14 @@
+# Dependências de produção (usadas no deploy). Para desenvolver: pip install -e ".[dev,test]"
+flask>=3.0
+flask-sqlalchemy>=3.1
+flask-migrate>=4.0
+flask-wtf>=1.2
+flask-login>=0.6
+email-validator>=2.0
+geoalchemy2>=0.15
+shapely>=2.0
+psycopg[binary]>=3.1
+python-dotenv>=1.0
+pillow>=10.0
+qrcode>=7.4
+requests>=2.31
