@@ -1,0 +1,43 @@
+{
+  "name": "achapet-backend",
+  "version": "1.0.0",
+  "private": true,
+  "description": "API do AchaPet (Node.js + Express + Prisma + Supabase)",
+  "type": "module",
+  "main": "src/server.js",
+  "scripts": {
+    "dev": "node --watch src/server.js",
+    "start": "node src/server.js",
+    "test": "vitest run",
+    "test:cobertura": "vitest run --coverage",
+    "lint": "eslint src tests",
+    "prisma:gerar": "prisma generate",
+    "prisma:migrar": "prisma migrate deploy",
+    "seed": "node scripts/seed.js",
+    "postinstall": "prisma generate"
+  },
+  "dependencies": {
+    "@prisma/adapter-pg": "7.10.1",
+    "@prisma/client": "7.10.1",
+    "@supabase/supabase-js": "^2.119.2",
+    "cors": "^2.8.5",
+    "dotenv": "^17.2.0",
+    "express": "^5.1.0",
+    "express-rate-limit": "^8.1.0",
+    "helmet": "^8.1.0",
+    "pg": "^8.16.3",
+    "pino": "^10.0.0",
+    "pino-http": "^11.0.0",
+    "serverless-http": "^4.0.0",
+    "zod": "^4.1.0"
+  },
+  "devDependencies": {
+    "@eslint/js": "^9.30.0",
+    "@vitest/coverage-v8": "^4.0.0",
+    "eslint": "^9.30.0",
+    "globals": "^16.3.0",
+    "prisma": "7.10.1",
+    "supertest": "^7.1.0",
+    "vitest": "^4.0.0"
+  }
+}
