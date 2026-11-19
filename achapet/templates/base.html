@@ -1,0 +1,80 @@
+{% from "partials/_pets.html" import pata, gato_espiando %}
+<!doctype html>
+<html lang="pt-BR">
+<head>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>{% block titulo %}AchaPet{% endblock %} | AchaPet</title>
+  <meta name="description" content="{% block descricao %}Mapa de animais perdidos e encontrados na Grande Vitória.{% endblock %}">
+  <meta name="theme-color" content="#14213d">
+  {% block meta %}{% endblock %}
+  <link rel="icon" href="{{ url_for('static', filename='img/favicon.svg') }}" type="image/svg+xml">
+  <link href="{{ url_for('static', filename='vendor/fonts/fontes.css') }}" rel="stylesheet">
+  <link href="{{ url_for('static', filename='vendor/bootstrap/bootstrap.min.css') }}" rel="stylesheet">
+  <link href="{{ url_for('static', filename='vendor/bootstrap-icons/bootstrap-icons.min.css') }}" rel="stylesheet">
+  {% block css %}{% endblock %}
+  <link href="{{ url_for('static', filename='css/app.css') }}" rel="stylesheet">
+</head>
+<body>
+  <a class="visually-hidden-focusable" href="#conteudo">Pular para o conteúdo</a>
+
+  <nav class="navbar navbar-expand-lg navbar-light ap-topo" aria-label="Navegação principal">
+    <div class="container">
+      <a class="navbar-brand" href="{{ url_for('main.index') }}">{{ pata() }}<b class="fw-bold">Acha<span>Pet</span></b></a>
+      <button class="navbar-toggler" type="button" data-bs-toggle="collapse" data-bs-target="#menu"
+              aria-controls="menu" aria-expanded="false" aria-label="Abrir menu">
+        <span class="navbar-toggler-icon"></span>
+      </button>
+      <div class="collapse navbar-collapse" id="menu">
+        <ul class="navbar-nav me-auto">
+          <li class="nav-item"><a class="nav-link {{ 'active' if request.blueprint == 'mural' }}" href="{{ url_for('mural.index') }}">Mural</a></li>
+          {% if current_user.is_authenticated %}
+          <li class="nav-item"><a class="nav-link {{ 'active' if request.endpoint == 'anuncios.meus' }}" href="{{ url_for('anuncios.meus') }}">Meus anúncios</a></li>
+          {% if current_user.eh_moderador %}
+          <li class="nav-item"><a class="nav-link {{ 'active' if request.blueprint == 'moderacao' }}" href="{{ url_for('moderacao.index') }}">Moderação</a></li>
+          {% endif %}
+          {% endif %}
+        </ul>
+        <div class="d-flex flex-column flex-lg-row gap-2 py-2 py-lg-0">
+          <a class="btn btn-ap" href="{{ url_for('anuncios.novo') }}"><i class="bi bi-plus-lg"></i> Publicar anúncio</a>
+          {% if current_user.is_authenticated %}
+          <div class="dropdown">
+            <button class="btn btn-contorno dropdown-toggle w-100" data-bs-toggle="dropdown" aria-expanded="false">
+              <i class="bi bi-person-circle"></i> {{ current_user.primeiro_nome }}
+            </button>
+            <ul class="dropdown-menu dropdown-menu-end">
+              <li><a class="dropdown-item" href="{{ url_for('auth.conta') }}">Minha conta</a></li>
+              <li><hr class="dropdown-divider"></li>
+              <li>
+                <form method="post" action="{{ url_for('auth.logout') }}">
+                  <input type="hidden" name="csrf_token" value="{{ csrf_token() }}">
+                  <button class="dropdown-item" type="submit">Sair</button>
+                </form>
+              </li>
+            </ul>
+          </div>
+          {% else %}
+          <a class="btn btn-contorno" href="{{ url_for('auth.login') }}">Entrar</a>
+          {% endif %}
+        </div>
+      </div>
+    </div>
+  </nav>
+
+  <main id="conteudo">
+    {% include "partials/_flash.html" %}
+    {% block conteudo %}{% endblock %}
+  </main>
+
+  <footer class="ap-rodape py-4">
+    {{ gato_espiando() }}
+    <div class="container d-flex flex-column flex-md-row justify-content-between gap-2">
+      <p class="mb-0">AchaPet: projeto acadêmico de Desenvolvimento de Sistemas para Web (UVV), 2026.</p>
+      <p class="mb-0"><a href="{{ url_for('main.termos') }}">Termos de uso e privacidade</a></p>
+    </div>
+  </footer>
+
+  <script src="{{ url_for('static', filename='vendor/bootstrap/bootstrap.bundle.min.js') }}"></script>
+  {% block scripts %}{% endblock %}
+</body>
+</html>

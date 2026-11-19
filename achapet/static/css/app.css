@@ -1,0 +1,280 @@
+/* =========================================================
+   AchaPet — identidade visual
+   Cores tiradas dos próprios bichos: caramelo do vira-lata,
+   chocolate do focinho, coral para "perdido", menta para
+   "encontrado" e azul-céu de passeio no parque.
+   Fredoka (arredondada) nos títulos e Nunito no texto.
+   Mascotes em SVG animados com CSS (ver partials/_pets.html).
+   O Bootstrap 5 cuida do grid, formulários e responsividade.
+   ========================================================= */
+
+:root {
+  --ap-fundo: #fff8ee;
+  --ap-branco: #ffffff;
+  --ap-tinta: #3b2a20;          /* chocolate */
+  --ap-tinta-suave: #7a6355;
+  --ap-linha: #f0e2cf;
+  --ap-caramelo: #f29e4c;
+  --ap-caramelo-escuro: #d97b26;
+  --ap-perdido: #ff5a5f;
+  --ap-perdido-escuro: #e0393f;
+  --ap-encontrado: #20a99a;
+  --ap-encontrado-escuro: #138476;
+  --ap-ceu: #d6efff;
+  --ap-amarelo: #ffd166;
+  --ap-raio: 20px;
+  --pata-svg: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 64 64'%3E%3Cellipse cx='32' cy='42' rx='15' ry='13'/%3E%3Cellipse cx='14' cy='27' rx='6.5' ry='8.5'/%3E%3Cellipse cx='25' cy='16' rx='6.5' ry='8.5'/%3E%3Cellipse cx='39' cy='16' rx='6.5' ry='8.5'/%3E%3Cellipse cx='50' cy='27' rx='6.5' ry='8.5'/%3E%3C/svg%3E");
+
+  --bs-body-bg: var(--ap-fundo);
+  --bs-body-color: var(--ap-tinta);
+  --bs-body-font-family: "Nunito", system-ui, sans-serif;
+  --bs-body-font-size: 1.02rem;
+  --bs-body-line-height: 1.6;
+  --bs-border-color: var(--ap-linha);
+  --bs-border-radius: 14px;
+  --bs-link-color-rgb: 217, 123, 38;
+  --bs-link-hover-color-rgb: 59, 42, 32;
+  --bs-focus-ring-color: rgba(242, 158, 76, .45);
+}
+
+body { min-height: 100vh; display: flex; flex-direction: column; font-weight: 500; }
+main { flex: 1; }
+
+h1, h2, h3, .h1, .h2, .h3, .titulo-pet {
+  font-family: "Fredoka", "Nunito", sans-serif;
+  font-weight: 600;
+  line-height: 1.08;
+  color: var(--ap-tinta);
+}
+h1, .h1 { font-size: clamp(2.2rem, 5.4vw, 3.6rem); }
+h2, .h2 { font-size: clamp(1.6rem, 3.4vw, 2.2rem); }
+h3, .h3 { font-size: 1.3rem; }
+.texto-suave { color: var(--ap-tinta-suave); }
+.medida { max-width: 62ch; }
+a { font-weight: 700; }
+
+:focus-visible { outline: 3px solid var(--ap-caramelo); outline-offset: 2px; }
+
+/* ---------- cabeçalho ---------- */
+.ap-topo { background: var(--ap-branco); border-bottom: 3px solid var(--ap-linha); }
+.ap-topo .navbar-brand {
+  font-family: "Fredoka", sans-serif; font-weight: 700; font-size: 1.75rem; color: var(--ap-tinta);
+  display: flex; align-items: center; gap: .35rem;
+}
+.ap-topo .navbar-brand .pata-icone { width: 34px; height: 34px; color: var(--ap-caramelo); transform: rotate(-14deg); }
+.ap-topo .navbar-brand span { color: var(--ap-caramelo-escuro); }
+.ap-topo .nav-link { color: var(--ap-tinta-suave); font-weight: 700; border-radius: 999px; padding-inline: .9rem !important; }
+.ap-topo .nav-link:hover, .ap-topo .nav-link.active { color: var(--ap-tinta); background: #fff1de; }
+
+/* ---------- botões (gordinhos, com "degrau" embaixo como brinquedo) ---------- */
+.btn { font-family: "Fredoka", sans-serif; font-weight: 600; border-radius: 999px; border-width: 0;
+       padding: .55rem 1.25rem; letter-spacing: .01em; }
+.btn-lg { padding: .75rem 1.6rem; font-size: 1.15rem; }
+.btn-sm { padding: .35rem .9rem; }
+.btn-ap {
+  --bs-btn-bg: var(--ap-caramelo); --bs-btn-color: var(--ap-tinta);
+  --bs-btn-hover-bg: #f6ae66; --bs-btn-hover-color: var(--ap-tinta);
+  --bs-btn-active-bg: var(--ap-caramelo); --bs-btn-active-color: var(--ap-tinta);
+  --bs-btn-disabled-bg: var(--ap-caramelo); --bs-btn-disabled-color: var(--ap-tinta);
+  box-shadow: 0 4px 0 var(--ap-caramelo-escuro);
+}
+.btn-ap:active, .btn-tinta:active, .btn-whatsapp:active { transform: translateY(3px); box-shadow: 0 1px 0 rgba(0,0,0,.25); }
+.btn-tinta {
+  --bs-btn-bg: var(--ap-tinta); --bs-btn-color: #fff; --bs-btn-hover-bg: #4e3a2e; --bs-btn-hover-color: #fff;
+  --bs-btn-active-bg: var(--ap-tinta); --bs-btn-active-color: #fff;
+  box-shadow: 0 4px 0 #1f150f;
+}
+.btn-contorno {
+  --bs-btn-color: var(--ap-tinta); --bs-btn-bg: var(--ap-branco); --bs-btn-hover-bg: #fff1de;
+  --bs-btn-hover-color: var(--ap-tinta); --bs-btn-active-bg: #ffe6c7;
+  box-shadow: inset 0 0 0 2px var(--ap-tinta);
+}
+.btn-whatsapp {
+  --bs-btn-bg: #25b864; --bs-btn-color: #fff; --bs-btn-hover-bg: #1fa257; --bs-btn-hover-color: #fff;
+  --bs-btn-active-bg: #25b864; --bs-btn-active-color: #fff; box-shadow: 0 4px 0 #168646;
+}
+.btn-outline-danger { box-shadow: inset 0 0 0 2px var(--bs-danger); }
+
+/* ---------- etiquetas ---------- */
+.etiqueta {
+  display: inline-flex; align-items: center; gap: .3rem; padding: .18rem .7rem; border-radius: 999px;
+  font-family: "Fredoka", sans-serif; font-weight: 600; font-size: .9rem; color: #fff;
+  background: var(--ap-tinta-suave);
+}
+.etiqueta::before {
+  content: ""; width: .9em; height: .9em; background: currentColor;
+  -webkit-mask: var(--pata-svg) center / contain no-repeat; mask: var(--pata-svg) center / contain no-repeat;
+}
+.etiqueta-perdido { background: var(--ap-perdido); }
+.etiqueta-encontrado { background: var(--ap-encontrado); }
+.etiqueta-reencontrado { background: var(--ap-amarelo); color: var(--ap-tinta); }
+.etiqueta-oculto, .etiqueta-removido { background: #b0835a; }
+.etiqueta-expirado { background: #a39486; }
+
+/* ---------- hero ---------- */
+.hero { position: relative; overflow: hidden; padding: clamp(2rem, 5vw, 4rem) 0 3rem; }
+.hero h1 { max-width: 14ch; }
+.hero .lead { font-size: 1.2rem; max-width: 44ch; color: var(--ap-tinta-suave); font-weight: 600; }
+.contadores { display: flex; gap: 1rem; flex-wrap: wrap; margin-top: 2rem; }
+.contadores > div { background: var(--ap-branco); border: 2px solid var(--ap-linha); border-radius: 18px; padding: .6rem 1.1rem; }
+.contadores strong { font-family: "Fredoka", sans-serif; font-size: 1.9rem; font-weight: 700; margin-right: .35rem; }
+.contadores .perdidos strong { color: var(--ap-perdido); }
+.contadores .reencontrados strong { color: var(--ap-encontrado); }
+
+/* Cena dos mascotes */
+.cena { position: relative; max-width: 470px; margin-inline: auto; aspect-ratio: 1 / .92; }
+.cena .sol { position: absolute; inset: 6% 4% 14% 4%; background: var(--ap-ceu); border-radius: 46% 54% 52% 48% / 55% 48% 52% 45%; }
+.cena .grama { position: absolute; left: 0; right: 0; bottom: 6%; height: 18%; background: #b9e4a0; border-radius: 50% 50% 18px 18px / 70% 70% 18px 18px; }
+.cena .pet-cachorro { position: absolute; width: 50%; left: 8%; bottom: 9%; }
+.cena .pet-gato { position: absolute; width: 39%; right: 7%; bottom: 9%; }
+.cena .pino-cena { position: absolute; width: 18%; left: 41%; top: 4%; }
+.balao {
+  position: absolute; left: 0; top: 16%; background: var(--ap-branco); border: 2px solid var(--ap-tinta);
+  border-radius: 18px; padding: .45rem .8rem; font-family: "Fredoka", sans-serif; font-weight: 600; font-size: .98rem;
+  max-width: 13ch; line-height: 1.2; transform: rotate(-4deg);
+}
+.balao::after { content: ""; position: absolute; right: 26px; bottom: -11px; width: 18px; height: 18px; background: var(--ap-branco);
+  border-right: 2px solid var(--ap-tinta); border-bottom: 2px solid var(--ap-tinta); transform: rotate(45deg); }
+
+/* ---------- animações dos mascotes ---------- */
+.pet .rabo { transform-box: fill-box; transform-origin: 0% 100%; animation: abanar .45s ease-in-out infinite alternate; }
+.pet .rabo-gato { transform-box: fill-box; transform-origin: 0% 100%; animation: balancar 2.6s ease-in-out infinite alternate; }
+.pet .cabeca { transform-box: fill-box; transform-origin: 50% 90%; animation: inclinar 5s ease-in-out infinite; }
+.pet .olhos, .gato-espiando .olhos { transform-box: fill-box; transform-origin: center; animation: piscar 4.2s infinite; }
+.pet-gato .olhos { animation-delay: 1.3s; animation-duration: 5.1s; }
+.pino-cena { animation: quicar 1.6s ease-in-out infinite; transform-origin: bottom center; }
+.pet-dormindo .respira { transform-box: fill-box; transform-origin: bottom center; animation: respirar 3s ease-in-out infinite; }
+.pet-dormindo .zz { animation: flutuar 3s ease-in-out infinite; }
+.pet-dormindo .z2 { animation-delay: 1.5s; }
+
+@keyframes abanar { from { transform: rotate(-14deg); } to { transform: rotate(16deg); } }
+@keyframes balancar { from { transform: rotate(-8deg); } to { transform: rotate(10deg); } }
+@keyframes inclinar { 0%, 70%, 100% { transform: rotate(0); } 78%, 90% { transform: rotate(-7deg); } }
+@keyframes piscar { 0%, 92%, 100% { transform: scaleY(1); } 95% { transform: scaleY(.1); } }
+@keyframes quicar { 0%, 100% { transform: translateY(0); } 50% { transform: translateY(-12px); } }
+@keyframes respirar { 0%, 100% { transform: scale(1); } 50% { transform: scale(1.03, 1.05); } }
+@keyframes flutuar { 0% { opacity: 0; transform: translate(0, 6px); } 30% { opacity: 1; } 100% { opacity: 0; transform: translate(8px, -14px); } }
+
+/* Trilha de patinhas que "anda" pelo fundo */
+.trilha-patas { position: absolute; pointer-events: none; display: flex; gap: 1.4rem; color: var(--ap-caramelo); }
+.trilha-patas span { display: block; width: 26px; opacity: 0; animation: pegada 7s infinite; animation-delay: calc(var(--i) * .5s); }
+.trilha-patas span:nth-child(odd) { transform: translateY(14px) rotate(80deg); }
+.trilha-patas span:nth-child(even) { transform: rotate(100deg); }
+.trilha-patas .pata-icone { width: 100%; height: auto; display: block; }
+.hero .trilha-patas { left: -10px; bottom: 18px; }
+@keyframes pegada { 0% { opacity: 0; } 6% { opacity: .35; } 45% { opacity: .35; } 60%, 100% { opacity: 0; } }
+
+/* ---------- passos "como funciona" (é uma sequência de verdade) ---------- */
+.passos { counter-reset: passo; }
+.passo { background: var(--ap-branco); border: 2px solid var(--ap-linha); border-radius: var(--ap-raio); padding: 1.3rem 1.3rem 1.2rem; height: 100%; }
+.passo h3::before {
+  counter-increment: passo; content: counter(passo); display: inline-grid; place-items: center;
+  width: 2rem; height: 2rem; margin-right: .5rem; border-radius: 50%; background: var(--ap-amarelo); font-size: 1.05rem;
+}
+
+/* ---------- cartões de anúncio ---------- */
+.anuncio-card {
+  display: flex; flex-direction: column; height: 100%; background: var(--ap-branco);
+  border: 2px solid var(--ap-linha); border-radius: var(--ap-raio); overflow: hidden;
+  text-decoration: none; color: inherit; font-weight: 500;
+  transition: transform .15s ease, border-color .15s ease;
+}
+.anuncio-card:hover { color: inherit; border-color: var(--ap-caramelo); transform: translateY(-3px) rotate(-.4deg); }
+.anuncio-card .capa { aspect-ratio: 4/3; object-fit: cover; width: 100%; }
+.anuncio-card .corpo { padding: .85rem 1rem 1.1rem; display: flex; flex-direction: column; gap: .3rem; }
+.anuncio-card h3 { font-size: 1.35rem; margin: .1rem 0 0; }
+.anuncio-card .meta { font-size: .92rem; color: var(--ap-tinta-suave); }
+
+/* Sem foto: patinha no lugar da imagem */
+.sem-foto { display: grid; place-items: center; background: #fff1de; }
+.sem-foto::after {
+  content: ""; width: 34%; max-width: 70px; aspect-ratio: 1; background: #f6c690;
+  -webkit-mask: var(--pata-svg) center / contain no-repeat; mask: var(--pata-svg) center / contain no-repeat;
+}
+.perdido .sem-foto { background: #ffe9e6; }
+.perdido .sem-foto::after { background: #ffb3b0; }
+.encontrado .sem-foto { background: #ddf5f1; }
+.encontrado .sem-foto::after { background: #90d9cf; }
+
+/* ---------- mural ---------- */
+.mural { display: grid; grid-template-columns: minmax(0, 1fr); gap: 1rem; }
+@media (min-width: 992px) {
+  .mural { grid-template-columns: 390px minmax(0, 1fr); height: calc(100vh - 140px); }
+  .mural aside { min-height: 0; }
+  .mural .lista { flex: 1; min-height: 0; overflow-y: auto; padding: .2rem .4rem .2rem .1rem; }
+}
+#mapa { height: 55vh; min-height: 320px; border: 3px solid var(--ap-branco); border-radius: var(--ap-raio);
+        box-shadow: 0 0 0 2px var(--ap-linha); }
+@media (min-width: 992px) { #mapa { height: 100%; } }
+.filtros { background: var(--ap-branco); border: 2px solid var(--ap-linha); border-radius: var(--ap-raio); padding: 1rem; }
+.item-lista {
+  display: grid; grid-template-columns: 82px 1fr; gap: .8rem; padding: .55rem; background: var(--ap-branco);
+  border: 2px solid var(--ap-linha); border-radius: 16px; text-decoration: none; color: inherit; font-weight: 500;
+}
+.item-lista:hover, .item-lista.destaque { border-color: var(--ap-caramelo); color: inherit; }
+.item-lista img, .item-lista .sem-foto { width: 82px; height: 82px; object-fit: cover; border-radius: 12px; }
+.item-lista strong { font-family: "Fredoka", sans-serif; font-weight: 600; font-size: 1.1rem; }
+.pino { width: 30px; height: 30px; border-radius: 50% 50% 50% 0; transform: rotate(-45deg); display: grid; place-items: center;
+        border: 3px solid #fff; box-shadow: 0 2px 5px rgba(59,42,32,.35); }
+.pino::after { content: ""; width: 14px; height: 14px; background: #fff; transform: rotate(45deg);
+               -webkit-mask: var(--pata-svg) center / contain no-repeat; mask: var(--pata-svg) center / contain no-repeat; }
+.pino.perdido { background: var(--ap-perdido); }
+.pino.encontrado { background: var(--ap-encontrado); }
+.vazio { text-align: center; padding: 1.2rem 1rem 1.6rem; border: 2px dashed #ecd3b4; border-radius: var(--ap-raio); background: var(--ap-branco); }
+.vazio .pet-dormindo { width: 190px; max-width: 70%; display: block; margin: 0 auto .4rem; }
+
+/* ---------- formulários ---------- */
+.painel { background: var(--ap-branco); border: 2px solid var(--ap-linha); border-radius: var(--ap-raio); padding: clamp(1.1rem, 3vw, 2rem); }
+.form-label, legend { font-weight: 800; }
+.form-control, .form-select { --bs-body-bg: var(--ap-branco); background-color: var(--ap-branco);
+  border: 2px solid #ead9c4; border-radius: 12px; font-weight: 600; }
+.form-control:focus, .form-select:focus { border-color: var(--ap-caramelo); box-shadow: 0 0 0 .22rem var(--bs-focus-ring-color); }
+.form-check-input:checked { background-color: var(--ap-caramelo); border-color: var(--ap-caramelo); }
+.form-range::-webkit-slider-thumb { background: var(--ap-caramelo); }
+.form-range::-moz-range-thumb { background: var(--ap-caramelo); }
+.escolha-tipo { display: grid; grid-template-columns: 1fr 1fr; gap: .8rem; }
+.escolha-tipo input { position: absolute; opacity: 0; }
+.escolha-tipo label {
+  display: flex; flex-direction: column; align-items: center; gap: .2rem; padding: 1rem .5rem; cursor: pointer;
+  border: 2px solid #ead9c4; border-radius: 18px; background: var(--ap-branco); text-align: center;
+  font-family: "Fredoka", sans-serif; font-weight: 600; font-size: 1.35rem;
+}
+.escolha-tipo label small { font-family: "Nunito", sans-serif; font-size: .85rem; font-weight: 600; color: var(--ap-tinta-suave); }
+.escolha-tipo input:checked + label.perdido { background: #ffe9e6; border-color: var(--ap-perdido); color: var(--ap-perdido-escuro); }
+.escolha-tipo input:checked + label.encontrado { background: #ddf5f1; border-color: var(--ap-encontrado); color: var(--ap-encontrado-escuro); }
+.escolha-tipo input:focus-visible + label { outline: 3px solid var(--ap-caramelo); outline-offset: 2px; }
+.lista-cores { list-style: none; padding: 0; margin: 0; display: flex; flex-wrap: wrap; gap: .45rem; }
+.lista-cores li { position: relative; }
+.lista-cores input { position: absolute; opacity: 0; }
+.lista-cores label { display: inline-block; padding: .35rem .9rem; border: 2px solid #ead9c4; border-radius: 999px;
+  cursor: pointer; background: var(--ap-branco); text-transform: capitalize; font-weight: 700; }
+.lista-cores input:checked + label { background: var(--ap-tinta); border-color: var(--ap-tinta); color: #fff; }
+.lista-cores input:focus-visible + label { outline: 3px solid var(--ap-caramelo); }
+#mapa-form { height: 320px; border-radius: 16px; border: 2px solid #ead9c4; }
+.previas { display: flex; gap: .5rem; flex-wrap: wrap; }
+.previas img { width: 96px; height: 96px; object-fit: cover; border-radius: 12px; border: 2px solid var(--ap-linha); }
+.invalid-feedback { display: block; font-weight: 700; }
+
+/* ---------- página do anúncio ---------- */
+.galeria-principal { width: 100%; aspect-ratio: 4/3; object-fit: cover; border-radius: 24px; border: 4px solid var(--ap-branco);
+                     box-shadow: 0 0 0 2px var(--ap-linha); }
+.miniaturas img { width: 78px; height: 78px; object-fit: cover; border-radius: 12px; border: 3px solid var(--ap-linha); cursor: pointer; }
+.miniaturas img.ativa { border-color: var(--ap-caramelo); }
+.ficha { background: var(--ap-branco); border: 2px solid var(--ap-linha); border-radius: var(--ap-raio); padding: .9rem .6rem .2rem; margin-inline: 0; }
+.ficha dt { font-weight: 700; color: var(--ap-tinta-suave); font-size: .85rem; }
+.ficha dd { font-family: "Fredoka", sans-serif; font-size: 1.12rem; font-weight: 500; margin-bottom: .6rem; }
+.aviso-golpe { background: #fff4cc; border: 2px solid #f5cf5b; border-radius: 16px; padding: .9rem 1rem; }
+.aviso-golpe strong { display: block; font-family: "Fredoka", sans-serif; font-weight: 600; font-size: 1.05rem; }
+.selo-reencontrado { display: flex; align-items: center; gap: 1rem; background: var(--ap-amarelo); border-radius: var(--ap-raio);
+  padding: .8rem 1.2rem; font-family: "Fredoka", sans-serif; font-weight: 600; font-size: 1.35rem; }
+.selo-reencontrado .pet { width: 70px; flex: none; }
+
+/* ---------- rodapé com gato espiando ---------- */
+.ap-rodape { position: relative; background: var(--ap-tinta); color: #e9d9c8; font-size: .95rem; margin-top: 5rem; }
+.ap-rodape a { color: #fff; }
+.ap-rodape .gato-espiando { position: absolute; right: 12%; top: -52px; width: 92px; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after { animation: none !important; transition: none !important; }
+  .trilha-patas span { opacity: .25; }
+}
