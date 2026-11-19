@@ -1,0 +1,49 @@
+{% extends "base.html" %}
+{% from "partials/_macros.html" import etiqueta %}
+{% from "partials/_pets.html" import cachorro_dormindo %}
+{% block titulo %}Meus anúncios{% endblock %}
+{% block conteudo %}
+<div class="container py-4">
+  <div class="d-flex flex-wrap justify-content-between align-items-end gap-2 mb-3">
+    <h1 class="mb-0">Meus anúncios</h1>
+    <a class="btn btn-ap" href="{{ url_for('anuncios.novo') }}"><i class="bi bi-plus-lg"></i> Novo anúncio</a>
+  </div>
+
+  {% if anuncios %}
+  <div class="d-flex flex-column gap-2">
+    {% for a in anuncios %}
+    <div class="item-lista {{ a.tipo }}" style="grid-template-columns: 84px 1fr auto">
+      {% if capas[a.id] %}<img src="{{ capas[a.id] }}" alt="">{% else %}<div class="sem-foto"></div>{% endif %}
+      <div>
+        <a class="fw-bold fs-5 text-decoration-none" href="{{ url_for('anuncios.detalhe', codigo=a.codigo) }}">{{ a.nome_pet or a.especie_rotulo }}</a>
+        <div class="d-flex flex-wrap gap-1 my-1">
+          {{ etiqueta(a.tipo, a.tipo_rotulo) }}
+          {% if a.esta_expirado %}{{ etiqueta("expirado", "Expirado") }}
+          {% elif a.status != "ativo" %}{{ etiqueta(a.status, a.status_rotulo) }}{% endif %}
+        </div>
+        <div class="small texto-suave">
+          Código {{ a.codigo }}, publicado em {{ a.criado_em|data_br }}
+          {% if a.status == "ativo" and not a.esta_expirado %}, expira em {{ a.dias_restantes }} dia(s){% endif %}
+        </div>
+      </div>
+      <div class="d-flex flex-column gap-1 justify-content-center">
+        {% if a.status in ("ativo", "expirado") %}
+        <form method="post" action="{{ url_for('anuncios.acao', codigo=a.codigo, acao='renovar') }}">
+          {{ acao_form.hidden_tag() }}<button class="btn btn-sm btn-contorno w-100" type="submit">Renovar</button>
+        </form>
+        <a class="btn btn-sm btn-contorno" href="{{ url_for('anuncios.editar', codigo=a.codigo) }}">Editar</a>
+        {% endif %}
+      </div>
+    </div>
+    {% endfor %}
+  </div>
+  {% else %}
+  <div class="vazio">
+    {{ cachorro_dormindo() }}
+    <p class="fs-5 mb-1">Você ainda não publicou nenhum anúncio.</p>
+    <p class="texto-suave">Perdeu ou encontrou um animal? Leva uns 3 minutos.</p>
+    <a class="btn btn-ap" href="{{ url_for('anuncios.novo') }}">Publicar anúncio</a>
+  </div>
+  {% endif %}
+</div>
+{% endblock %}

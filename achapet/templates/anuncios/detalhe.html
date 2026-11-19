@@ -1,0 +1,170 @@
+{% extends "base.html" %}
+{% from "partials/_macros.html" import etiqueta %}
+{% from "partials/_pets.html" import cachorro, cachorro_dormindo %}
+{% block titulo %}{{ anuncio.titulo }}{% endblock %}
+{% block descricao %}{{ anuncio.titulo }} em {{ anuncio.local_texto or "Grande Vitória" }}. Ajude a divulgar.{% endblock %}
+{% block meta %}
+<meta property="og:title" content="{{ anuncio.titulo }}">
+<meta property="og:description" content="{{ anuncio.especie_rotulo }}, {{ anuncio.cores_texto }}. {{ anuncio.local_texto }}">
+{% if fotos %}<meta property="og:image" content="{{ fotos[0] }}">{% endif %}
+{% endblock %}
+{% block css %}<link rel="stylesheet" href="{{ url_for('static', filename='vendor/leaflet/leaflet.css') }}">{% endblock %}
+
+{% block conteudo %}
+{% set texto_compartilhar = anuncio.titulo ~ " em " ~ (anuncio.bairro or anuncio.cidade or "Grande Vitória") ~ ". Viu este animal? Veja o anúncio: " ~ link %}
+<div class="container py-4">
+
+  {% if anuncio.status == "reencontrado" %}
+  <div class="selo-reencontrado mb-4">{{ cachorro() }} Este animal já voltou para casa. Obrigado a todos que ajudaram!</div>
+  {% elif anuncio.status == "oculto" %}
+  <div class="alert alert-warning">Este anúncio recebeu denúncias e está oculto até a análise da moderação.</div>
+  {% elif anuncio.status == "removido" %}
+  <div class="alert alert-danger">Este anúncio foi removido pela moderação.</div>
+  {% elif anuncio.esta_expirado %}
+  <div class="alert alert-secondary">Este anúncio expirou{% if eh_autor %}. Renove para ele voltar ao mapa{% endif %}.</div>
+  {% endif %}
+
+  <div class="row g-4">
+    <div class="col-lg-6 {{ anuncio.tipo }}">
+      {% if fotos %}
+      <img id="foto-principal" class="galeria-principal" src="{{ fotos[0] }}" alt="Foto de {{ anuncio.titulo|lower }}">
+      {% if fotos|length > 1 %}
+      <div class="miniaturas d-flex gap-2 mt-2">
+        {% for f in fotos %}
+        <button type="button" class="p-0 border-0 bg-transparent" data-foto="{{ f }}" aria-label="Ver foto {{ loop.index }}">
+          <img src="{{ f }}" alt="" class="{{ 'ativa' if loop.first }}">
+        </button>
+        {% endfor %}
+      </div>
+      {% endif %}
+      {% else %}
+      <div class="galeria-principal sem-foto" role="img" aria-label="Anúncio sem foto"></div>
+      {% endif %}
+    </div>
+
+    <div class="col-lg-6">
+      <div class="d-flex flex-wrap gap-2 mb-2">
+        {{ etiqueta(anuncio.tipo, anuncio.tipo_rotulo) }}
+        {% if anuncio.status != "ativo" %}{{ etiqueta(anuncio.status, anuncio.status_rotulo) }}{% endif %}
+      </div>
+      <h1 class="mb-1">{{ anuncio.nome_pet or anuncio.especie_rotulo }}</h1>
+      <p class="texto-suave fs-5">
+        {{ "Visto pela última vez" if anuncio.tipo == "perdido" else "Encontrado" }}
+        em {{ anuncio.local_texto or "local marcado no mapa" }}, {{ anuncio.data_ocorrencia|data_br }}
+      </p>
+
+      <dl class="row ficha">
+        <div class="col-6"><dt>Espécie</dt><dd>{{ anuncio.especie_rotulo }}</dd></div>
+        <div class="col-6"><dt>Porte</dt><dd>{{ anuncio.porte_rotulo }}</dd></div>
+        <div class="col-6"><dt>Sexo</dt><dd>{{ anuncio.sexo_rotulo }}</dd></div>
+        <div class="col-6"><dt>Cores</dt><dd class="text-capitalize">{{ anuncio.cores_texto }}</dd></div>
+        {% if anuncio.raca %}<div class="col-6"><dt>Raça</dt><dd>{{ anuncio.raca }}</dd></div>{% endif %}
+        <div class="col-6"><dt>Código</dt><dd>{{ anuncio.codigo }}</dd></div>
+      </dl>
+      {% if anuncio.descricao %}<p class="medida" style="white-space: pre-line">{{ anuncio.descricao }}</p>{% endif %}
+
+      {% if eh_autor and anuncio.detalhe_oculto %}
+      <p class="small border-start border-3 ps-2"><strong>Seu detalhe secreto:</strong> {{ anuncio.detalhe_oculto }}
+        <br><span class="texto-suave">Pergunte isso a quem disser ser o tutor. Só você vê este campo.</span></p>
+      {% endif %}
+
+      <div class="d-flex flex-wrap gap-2 my-3">
+        <a class="btn btn-whatsapp" href="{{ link_whatsapp(texto_compartilhar) }}" target="_blank" rel="noopener">
+          <i class="bi bi-whatsapp"></i> Compartilhar no WhatsApp</a>
+        <button class="btn btn-contorno" type="button" id="copiar-link" data-link="{{ link }}"><i class="bi bi-link-45deg"></i> Copiar link</button>
+        <a class="btn btn-contorno" href="{{ url_for('anuncios.cartaz_impressao', codigo=anuncio.codigo) }}" target="_blank"><i class="bi bi-printer"></i> Cartaz para imprimir</a>
+      </div>
+
+      {% if not eh_autor and anuncio.status in ("ativo", "expirado") %}
+      <div class="painel mb-3">
+        <h2 class="h3">Falar com quem anunciou</h2>
+        {% if current_user.is_authenticated %}
+        <p class="mb-2">{{ anuncio.autor.primeiro_nome }} ({{ anuncio.autor.perfil_rotulo|lower }}): <strong>{{ anuncio.autor.telefone_formatado }}</strong></p>
+        <a class="btn btn-whatsapp" target="_blank" rel="noopener"
+           href="{{ link_whatsapp('Olá! Vi seu anúncio no AchaPet (' ~ anuncio.codigo ~ '): ' ~ link, anuncio.autor.telefone) }}">
+          <i class="bi bi-whatsapp"></i> Chamar no WhatsApp</a>
+        {% else %}
+        <p class="mb-2">Para proteger quem anunciou, o telefone só aparece para quem tem conta.</p>
+        <a class="btn btn-tinta" href="{{ url_for('auth.login', next=request.path) }}">Entrar para ver o contato</a>
+        {% endif %}
+      </div>
+      {% endif %}
+
+      <div class="aviso-golpe mb-3" role="note">
+        <strong><i class="bi bi-shield-exclamation"></i> Cuidado com golpes</strong>
+        Nunca pague para receber um animal de volta nem faça Pix antes de ver o pet pessoalmente.
+        Golpistas usam fotos editadas, até com inteligência artificial. Combine o encontro em local público.
+      </div>
+
+      {% if eh_autor %}
+      <div class="painel">
+        <h2 class="h3">Gerenciar anúncio</h2>
+        {% if anuncio.status in ("ativo", "expirado") %}
+        <p class="texto-suave mb-2">{% if anuncio.status == "ativo" %}Expira em {{ anuncio.dias_restantes }} dia(s).{% endif %}</p>
+        {% endif %}
+        <div class="d-flex flex-wrap gap-2">
+          {% if anuncio.status in ("ativo", "expirado") %}
+          <form method="post" action="{{ url_for('anuncios.acao', codigo=anuncio.codigo, acao='reencontrado') }}">
+            {{ acao_form.hidden_tag() }}<button class="btn btn-ap" type="submit"><i class="bi bi-house-heart"></i> Marcar como reencontrado</button>
+          </form>
+          <form method="post" action="{{ url_for('anuncios.acao', codigo=anuncio.codigo, acao='renovar') }}">
+            {{ acao_form.hidden_tag() }}<button class="btn btn-contorno" type="submit">Renovar por 30 dias</button>
+          </form>
+          <a class="btn btn-contorno" href="{{ url_for('anuncios.editar', codigo=anuncio.codigo) }}">Editar</a>
+          {% endif %}
+          <form method="post" action="{{ url_for('anuncios.acao', codigo=anuncio.codigo, acao='excluir') }}"
+                onsubmit="return confirm('Excluir este anúncio e as fotos? Não dá para desfazer.')">
+            {{ acao_form.hidden_tag() }}<button class="btn btn-outline-danger" type="submit">Excluir</button>
+          </form>
+        </div>
+      </div>
+      {% endif %}
+    </div>
+  </div>
+
+  <div class="row g-4 mt-1">
+    <div class="col-lg-6">
+      <h2 class="h3">Região aproximada</h2>
+      <div id="mapa-detalhe" style="height: 280px; border: 2px solid var(--ap-tinta)"
+           data-lat="{{ anuncio.lat_aprox }}" data-lng="{{ anuncio.lng_aprox }}"></div>
+      <p class="form-text">Por segurança, o mapa mostra uma área de cerca de 300 m, não o ponto exato.</p>
+    </div>
+
+    {% if eh_autor and anuncio.status == "ativo" %}
+    <div class="col-lg-6">
+      <h2 class="h3">Anúncios parecidos por perto</h2>
+      <p class="texto-suave">{{ "Animais encontrados" if anuncio.tipo == "perdido" else "Animais perdidos" }} com a mesma espécie, porte e pelo menos uma cor em comum, até 5 km.</p>
+      {% for c in correspondencias %}
+      <a class="item-lista {{ c.tipo }} mb-2" href="{{ url_for('anuncios.detalhe', codigo=c.codigo) }}">
+        {% if c.foto_url %}<img src="{{ c.foto_url }}" alt="">{% else %}<div class="sem-foto"></div>{% endif %}
+        <div>
+          <strong>{{ c.nome_pet or c.especie_rotulo }}</strong> <span class="etiqueta etiqueta-{{ c.tipo }} ms-1">{{ c.tipo_rotulo }}</span>
+          <div class="small texto-suave text-capitalize">{{ c.cores }}</div>
+          <div class="small">{{ c.distancia_m|distancia }} daqui, {{ c.bairro or "" }}, {{ c.data_ocorrencia|data_br }}</div>
+        </div>
+      </a>
+      {% else %}
+      <div class="vazio">{{ cachorro_dormindo() }}<p class="mb-0">Nenhum anúncio compatível ainda. A gente confere de novo sempre que você abrir esta página.</p></div>
+      {% endfor %}
+    </div>
+    {% elif not eh_autor and current_user.is_authenticated and anuncio.visivel_publicamente %}
+    <div class="col-lg-6">
+      <details class="painel">
+        <summary class="fw-semibold">Denunciar anúncio</summary>
+        <form method="post" action="{{ url_for('anuncios.denunciar', codigo=anuncio.codigo) }}" class="mt-3" novalidate>
+          {{ denuncia_form.hidden_tag() }}
+          <div class="mb-2">{{ denuncia_form.motivo.label(class="form-label") }}{{ denuncia_form.motivo(class="form-select") }}</div>
+          <div class="mb-2">{{ denuncia_form.detalhe.label(class="form-label") }}{{ denuncia_form.detalhe(class="form-control", rows=2, maxlength=500) }}</div>
+          <button class="btn btn-outline-danger" type="submit">Enviar denúncia</button>
+        </form>
+      </details>
+    </div>
+    {% endif %}
+  </div>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='vendor/leaflet/leaflet.js') }}"></script>
+<script src="{{ url_for('static', filename='js/detalhe.js') }}"></script>
+{% endblock %}

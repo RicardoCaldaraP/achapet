@@ -1,0 +1,99 @@
+{% extends "base.html" %}
+{% from "partials/_macros.html" import campo, erros %}
+{% block titulo %}{{ "Editar anúncio" if anuncio else "Publicar anúncio" }}{% endblock %}
+{% block css %}<link rel="stylesheet" href="{{ url_for('static', filename='vendor/leaflet/leaflet.css') }}">{% endblock %}
+
+{% block conteudo %}
+<div class="container py-4" style="max-width: 860px">
+  <h1 class="mb-1">{{ "Editar anúncio " ~ anuncio.codigo if anuncio else "Publicar anúncio" }}</h1>
+  <p class="texto-suave mb-4">Quanto mais detalhes, maior a chance de alguém reconhecer o animal.</p>
+
+  <form method="post" enctype="multipart/form-data" class="painel" id="form-anuncio" novalidate>
+    {{ form.hidden_tag() }}
+
+    <fieldset class="mb-4">
+      <legend class="h3">O que aconteceu?</legend>
+      <div class="escolha-tipo" role="radiogroup">
+        {% for opcao in form.tipo %}
+        <div>
+          {{ opcao() }}
+          <label for="{{ opcao.id }}" class="{{ opcao.data }}">{{ opcao.label.text }}
+            <small>{{ "Meu pet sumiu" if opcao.data == "perdido" else "Achei um bichinho na rua" }}</small></label>
+        </div>
+        {% endfor %}
+      </div>
+      {{ erros(form.tipo) }}
+    </fieldset>
+
+    <fieldset class="mb-4">
+      <legend class="h3">Sobre o animal</legend>
+      <div class="row">
+        {{ campo(form.especie, classe="col-12 col-sm-4") }}
+        {{ campo(form.porte, classe="col-6 col-sm-4") }}
+        {{ campo(form.sexo, classe="col-6 col-sm-4") }}
+      </div>
+      <div class="mb-3">
+        <span class="form-label d-block">{{ form.cores.label.text }}</span>
+        {{ form.cores(class="lista-cores") }}
+        {{ erros(form.cores) }}
+      </div>
+      <div class="row">
+        {{ campo(form.nome_pet, classe="col-sm-6", placeholder="Se souber") }}
+        {{ campo(form.raca, classe="col-sm-6", placeholder="Ex.: SRD, poodle") }}
+      </div>
+      {{ campo(form.descricao, rows=4, maxlength=1000,
+               placeholder="Coleira, comportamento, marcas no corpo, se atende pelo nome...") }}
+      {{ campo(form.detalhe_oculto, maxlength=200,
+               ajuda="Uma marca que só o dono saberia. Use para conferir quem diz ser o tutor.") }}
+    </fieldset>
+
+    <fieldset class="mb-4">
+      <legend class="h3">Quando e onde</legend>
+      {{ campo(form.data_ocorrencia, classe="col-sm-6 px-0", max=hoje) }}
+
+      <p class="form-label mb-2">Onde o animal foi visto pela última vez?</p>
+      <div class="d-flex flex-wrap gap-2 mb-2">
+        <button type="button" class="btn btn-contorno btn-sm" id="usar-gps"><i class="bi bi-crosshair"></i> Usar minha localização</button>
+        <div class="input-group input-group-sm" style="max-width: 260px">
+          {{ form.cep(class="form-control", placeholder="CEP", inputmode="numeric", **{"aria-label": "CEP"}) }}
+          <button type="button" class="btn btn-tinta" id="buscar-cep">Buscar CEP</button>
+        </div>
+      </div>
+      <p class="form-text mt-0" id="status-local" aria-live="polite">Ou toque no mapa para marcar o ponto. Você pode arrastar o marcador.</p>
+      <div id="mapa-form" class="mb-2"
+           data-lat="{{ form.latitude.data or '' }}" data-lng="{{ form.longitude.data or '' }}"
+           data-centro="{{ config.MAPA_CENTRO_PADRAO|join(',') }}"></div>
+      {{ form.latitude(type="hidden") }}{{ form.longitude(type="hidden") }}
+      {{ erros(form.latitude) }}
+      <div class="row mt-2">
+        {{ campo(form.bairro, classe="col-sm-5") }}
+        {{ campo(form.cidade, classe="col-sm-5") }}
+        {{ campo(form.uf, classe="col-sm-2", maxlength=2) }}
+      </div>
+    </fieldset>
+
+    <fieldset class="mb-4">
+      <legend class="h3">Fotos</legend>
+      {% if anuncio and fotos %}
+      <p class="form-text">Fotos atuais (enviar novas substitui todas):</p>
+      <div class="previas mb-2">{% for f in fotos %}<img src="{{ f }}" alt="Foto {{ loop.index }} do anúncio">{% endfor %}</div>
+      {% endif %}
+      {{ form.fotos(class="form-control" + (" is-invalid" if form.fotos.errors else ""), accept="image/*", id="fotos") }}
+      <div class="form-text">Até 3 fotos. Elas são reduzidas no seu celular antes do envio.</div>
+      {{ erros(form.fotos) }}
+      <div class="previas mt-2" id="previas"></div>
+    </fieldset>
+
+    <div class="d-flex flex-wrap gap-2">
+      <button class="btn btn-ap btn-lg" type="submit" id="enviar">{{ "Salvar alterações" if anuncio else "Publicar anúncio" }}</button>
+      <a class="btn btn-contorno btn-lg" href="{{ url_for('anuncios.detalhe', codigo=anuncio.codigo) if anuncio else url_for('mural.index') }}">Cancelar</a>
+    </div>
+  </form>
+</div>
+{% endblock %}
+
+{% block scripts %}
+<script src="{{ url_for('static', filename='vendor/leaflet/leaflet.js') }}"></script>
+<script src="{{ url_for('static', filename='vendor/browser-image-compression.js') }}"></script>
+<script src="{{ url_for('static', filename='js/form-anuncio.js') }}"></script>
+{% endblock %}
