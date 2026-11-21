@@ -6,7 +6,7 @@ import { Cachorro, Gato, TrilhaPatas } from "../components/Pets.jsx";
 
 export default function Inicio() {
   const [recentes, setRecentes] = useState([]);
-  const [numeros, setNumeros] = useState({ perdidos: 0, encontrados: 0, reencontrados: 0 });
+  const [numeros, setNumeros] = useState({ perdidos: 0, encontrados: 0, reencontrados: 0, publicados: 0 });
 
   useEffect(() => {
     document.title = "AchaPet | Animais perdidos e encontrados na Grande Vitória";
@@ -107,6 +107,39 @@ export default function Inicio() {
           </Vazio>
         )}
       </section>
+
+      {numeros.publicados > 0 && (
+        <section className="container py-4">
+          <h2 className="mb-1">Resultados do piloto</h2>
+          <p className="texto-suave mb-3">Como o AchaPet está ajudando a Grande Vitória até agora.</p>
+          <div className="row g-3 indicadores">
+            <div className="col-sm-4">
+              <div className="passo">
+                <strong>{numeros.publicados}</strong>
+                <span>anúncios publicados</span>
+              </div>
+            </div>
+            <div className="col-sm-4">
+              <div className="passo">
+                <strong>{numeros.taxa_reencontro.toLocaleString("pt-BR")}%</strong>
+                <span>terminaram em reencontro</span>
+              </div>
+            </div>
+            <div className="col-sm-4">
+              <div className="passo">
+                <strong>
+                  {numeros.tempo_medio_dias == null ? "—" : numeros.tempo_medio_dias.toLocaleString("pt-BR")}
+                </strong>
+                <span>
+                  {numeros.tempo_medio_dias == null
+                    ? "tempo médio até o reencontro (ainda sem casos)"
+                    : `${numeros.tempo_medio_dias === 1 ? "dia" : "dias"} em média do sumiço até o reencontro`}
+                </span>
+              </div>
+            </div>
+          </div>
+        </section>
+      )}
     </>
   );
 }

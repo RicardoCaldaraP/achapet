@@ -247,11 +247,24 @@ export function criarServicoAnuncios({ prisma, storage, geo, config }) {
       grupos
         .filter((g) => g.status === status && (!tipo || g.tipo === tipo))
         .reduce((soma, g) => soma + g._count._all, 0);
+    // Indicadores do piloto (objetivo 5 do MVP): anúncios publicados, taxa de
+    // reencontro e tempo médio entre o sumiço e o reencontro. Anúncios removidos
+    // pela moderação não entram na conta.
+    const [piloto] = await prisma.$queryRaw`
+      SELECT count(*)::int AS publicados,
+             round(avg(reencontrado_em::date - data_ocorrencia)
+                   FILTER (WHERE status = 'reencontrado'), 1)::float AS tempo_medio_dias
+        FROM anuncio
+       WHERE status <> 'removido'`;
+    const reencontrados = total("reencontrado");
     return {
       perdidos: total("ativo", "perdido"),
       encontrados: total("ativo", "encontrado"),
       ativos: total("ativo"),
-      reencontrados: total("reencontrado"),
+      reencontrados,
+      publicados: piloto.publicados,
+      taxa_reencontro: piloto.publicados ? Math.round((reencontrados / piloto.publicados) * 1000) / 10 : 0,
+      tempo_medio_dias: piloto.tempo_medio_dias,
     };
   }
 

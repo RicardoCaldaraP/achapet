@@ -173,6 +173,9 @@ describe("home e correspondências", () => {
       encontrados: 1,
       ativos: 2,
       reencontrados: 1,
+      publicados: 3,
+      taxa_reencontro: 33.3,
+      tempo_medio_dias: 0,
     });
   });
 
