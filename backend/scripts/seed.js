@@ -3,11 +3,13 @@
  *
  * Cria 5 contas (login no Supabase Auth + perfil) e 11 anúncios espalhados por
  * Vitória, Vila Velha, Serra e Cariacica, incluindo pares que se correspondem,
- * um caso já reencontrado e uma denúncia para a moderação.
+ * um caso já reencontrado e uma denúncia para a moderação. Cada anúncio ganha
+ * uma foto (ver fotos-demo.js).
  * Rodar de novo não duplica: se já houver anúncios, o script para.
  */
 import { criarDependencias } from "../src/dependencias.js";
 import { createApp } from "../src/app.js";
+import { adicionarFotosDemo } from "./fotos-demo.js";
 
 const SENHA = process.env.SEED_SENHA || "achapet123";
 
@@ -73,6 +75,10 @@ async function main() {
     motivo: "duplicado",
     detalhe: "Acho que já vi este anúncio em outro lugar.",
   });
+
+  await adicionarFotosDemo(deps).catch((erro) =>
+    console.warn(`Fotos de demonstração não enviadas (${erro.message}). Rode depois: npm run fotos-demo`),
+  );
 
   console.log(`${Object.keys(contas).length} contas e ${criados.length} anúncios criados. Senha: ${SENHA}`);
   console.log("Moderador: ricardo@achapet.dev");

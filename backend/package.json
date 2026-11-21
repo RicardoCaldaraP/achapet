@@ -14,7 +14,8 @@
     "prisma:gerar": "prisma generate",
     "prisma:migrar": "prisma migrate deploy",
     "seed": "node scripts/seed.js",
-    "postinstall": "prisma generate"
+    "postinstall": "prisma generate",
+    "fotos-demo": "node scripts/fotos-demo.js"
   },
   "dependencies": {
     "@prisma/adapter-pg": "7.10.1",

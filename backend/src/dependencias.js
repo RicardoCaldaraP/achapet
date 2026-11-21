@@ -23,6 +23,7 @@ export function criarDependencias(env = process.env) {
     config,
     logger,
     prisma,
+    supabase, // usado pelos scripts (fotos de demonstração)
     auth: criarServicoAuth(supabase),
     storage: criarServicoStorage(supabase),
   };

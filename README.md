@@ -84,7 +84,7 @@ npm install                                  # instala backend e frontend
 cp backend/.env.example backend/.env         # preencha DATABASE_URL e as chaves do Supabase
 cp frontend/.env.example frontend/.env.local # preencha a URL e a chave publicável
 npm run prisma:migrar --workspace backend    # cria as tabelas (no projeto atual já está aplicado)
-npm run seed                                 # opcional: dados de demonstração
+npm run seed                                 # opcional: dados de demonstração (com fotos)
 npm run dev:api                              # API em http://localhost:3001
 npm run dev:site                             # site em http://localhost:5173 (em outro terminal)
 ```
@@ -120,4 +120,6 @@ O `netlify.toml` já configura tudo. Variáveis de ambiente necessárias no pain
 ## Créditos
 
 Mapas © colaboradores do OpenStreetMap. Fontes Fredoka e Nunito (SIL Open Font License).
-Mascotes desenhados em SVG para o projeto.
+Mascotes desenhados em SVG para o projeto. As fotos dos anúncios de demonstração são do
+Wikimedia Commons, com licenças livres; autores e licenças em
+[`backend/scripts/fotos-demo/CREDITOS.md`](backend/scripts/fotos-demo/CREDITOS.md).
