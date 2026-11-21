@@ -34,3 +34,9 @@
 8. **Limites dos serviços gratuitos.** O Nominatim aceita 1 requisição por segundo: a API faz fila
    e guarda as respostas em cache. CEP usa BrasilAPI e, se falhar, ViaCEP. O PWA guarda em cache
    as fotos e os pedaços do mapa para abrir rápido em rede 4G.
+
+9. **E-mail de graça e sem travar a API.** Os alertas usam SMTP com o Nodemailer, que funciona com o Gmail e uma
+   senha de app (gratuito, até 500 e-mails por dia). O envio acontece logo após a publicação, com prazos curtos
+   de conexão para não estourar o tempo da função serverless, e uma falha no e-mail nunca desfaz o anúncio. Sem
+   SMTP configurado, o alerta é só registrado no log. A busca de quem avisar é feita no banco, com `ST_DWithin`
+   entre a área do alerta e o ponto do anúncio.

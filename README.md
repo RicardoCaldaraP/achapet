@@ -21,7 +21,9 @@ Projeto final de **Desenvolvimento de Sistemas para Web (UVV)**.
 7. **Gestão dos anúncios**: editar, renovar, excluir, marcar como reencontrado; expiração
    automática após 30 dias.
 
-Complementares implementados: detalhe oculto (só o autor vê) e selo de ONG/protetor verificado.
+Complementares implementados: **alertas por e-mail** de anúncios novos numa área escolhida no mapa, detalhe
+oculto (só o autor vê) e selo de ONG/protetor verificado. A página inicial mostra os **indicadores do piloto**:
+anúncios publicados, taxa de reencontro e tempo médio do sumiço até o reencontro.
 O app é um **PWA** instalável no celular.
 
 ## Tecnologias
@@ -35,7 +37,7 @@ O app é um **PWA** instalável no celular.
 | Banco | PostgreSQL + PostGIS no Supabase |
 | Supabase | Auth (login por e-mail), API REST (busca do mural via RPC) e Storage (fotos) |
 | Geolocalização | Nominatim (bairro pelo ponto), BrasilAPI e ViaCEP (CEP), IBGE (estados e municípios) |
-| Bibliotecas | qrcode (cartaz), browser-image-compression (fotos até 1 MB), pino (logs), helmet |
+| Bibliotecas | qrcode (cartaz), browser-image-compression (fotos até 1 MB), pino (logs), helmet, Nodemailer (e-mails dos alertas) |
 | Testes | Vitest + Supertest (API) e Vitest + Testing Library (React) |
 | Hospedagem | Netlify (site + Express como função serverless + tarefa agendada) e Supabase |
 
@@ -56,14 +58,14 @@ AchaPet/
 │   │   ├── app.js          # createApp(): fábrica da aplicação
 │   │   ├── config.js       # variáveis de ambiente validadas com Zod
 │   │   ├── dependencias.js # monta Prisma, Supabase e logger a partir do .env
-│   │   ├── routes/         # usuarios, anuncios, moderacao, geral (Routers)
+│   │   ├── routes/         # usuarios, anuncios, alertas, moderacao, geral (Routers)
 │   │   ├── services/       # regras de negócio
 │   │   ├── schemas.js      # validação dos dados recebidos
 │   │   ├── middlewares.js  # autenticação, moderador, validação
 │   │   ├── erros.js        # erros padronizados em JSON
-│   │   └── lib/            # prisma, supabase, logger
+│   │   └── lib/            # prisma, supabase, logger, email
 │   ├── scripts/seed.js     # dados de demonstração
-│   └── tests/              # 45 testes da API
+│   └── tests/              # 53 testes da API
 └── frontend/
     ├── src/
     │   ├── pages/          # Inicio, Mural, Anuncio, Cartaz, FormAnuncio, ...
@@ -116,6 +118,10 @@ migrations e apagam tudo no fim. O Supabase Auth e o Storage são substituídos 
 O `netlify.toml` já configura tudo. Variáveis de ambiente necessárias no painel da Netlify:
 `DATABASE_URL`, `SUPABASE_URL`, `SUPABASE_SECRET_KEY`, `CORS_ORIGIN` (endereço do site),
 `VITE_SUPABASE_URL`, `VITE_SUPABASE_PUBLISHABLE_KEY` e `VITE_API_URL=/api`.
+
+Para os **alertas por e-mail**, acrescente também `SMTP_HOST`, `SMTP_PORTA`, `SMTP_USUARIO`, `SMTP_SENHA` e
+`EMAIL_REMETENTE` (veja `backend/.env.example`; com o Gmail e uma senha de app é grátis). Sem essas variáveis o
+site funciona normalmente e os alertas são só registrados no log.
 
 ## Créditos
 
