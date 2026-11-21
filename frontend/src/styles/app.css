@@ -119,7 +119,10 @@ a { font-weight: 700; }
 .contadores > div { background: var(--ap-branco); border: 2px solid var(--ap-linha); border-radius: 18px; padding: .6rem 1.1rem; }
 .contadores strong { font-family: "Fredoka Variable", sans-serif; font-size: 1.9rem; font-weight: 700; margin-right: .35rem; }
 .contadores .perdidos strong { color: var(--ap-perdido); }
-.contadores .reencontrados strong { color: var(--ap-encontrado); }
+.contadores .encontrados strong { color: var(--ap-encontrado); }
+.contadores .reencontrados { border-color: var(--ap-amarelo); background: #fff6dc; }
+.contadores .reencontrados strong { color: var(--ap-caramelo-escuro); }
+.contadores .reencontrados i { color: var(--ap-caramelo-escuro); margin-right: .4rem; }
 
 /* Cena dos mascotes */
 .cena { position: relative; max-width: 470px; margin-inline: auto; aspect-ratio: 1 / .92; }

@@ -161,13 +161,19 @@ describe("gestão do anúncio", () => {
 });
 
 describe("home e correspondências", () => {
-  it("lista recentes e conta ativos e reencontrados", async () => {
+  it("lista recentes e conta perdidos, encontrados e reencontrados", async () => {
     const u = await criarUsuario(request);
     await criarAnuncio(request, u, { nome_pet: "A" });
+    await criarAnuncio(request, u, { nome_pet: "C", tipo: "encontrado" });
     const b = await criarAnuncio(request, u, { nome_pet: "B" });
     await request.post(`/api/anuncios/${b.codigo}/reencontrado`).set(u.auth);
-    expect((await request.get("/api/anuncios/recentes")).body.map((a) => a.nome_pet)).toEqual(["A"]);
-    expect((await request.get("/api/anuncios/estatisticas")).body).toEqual({ ativos: 1, reencontrados: 1 });
+    expect((await request.get("/api/anuncios/recentes")).body.map((a) => a.nome_pet).sort()).toEqual(["A", "C"]);
+    expect((await request.get("/api/anuncios/estatisticas")).body).toEqual({
+      perdidos: 1,
+      encontrados: 1,
+      ativos: 2,
+      reencontrados: 1,
+    });
   });
 
   it("sugere encontrados compatíveis para um perdido", async () => {

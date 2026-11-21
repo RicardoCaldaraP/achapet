@@ -6,7 +6,7 @@ import { Cachorro, Gato, TrilhaPatas } from "../components/Pets.jsx";
 
 export default function Inicio() {
   const [recentes, setRecentes] = useState([]);
-  const [numeros, setNumeros] = useState({ ativos: 0, reencontrados: 0 });
+  const [numeros, setNumeros] = useState({ perdidos: 0, encontrados: 0, reencontrados: 0 });
 
   useEffect(() => {
     document.title = "AchaPet | Animais perdidos e encontrados na Grande Vitória";
@@ -31,8 +31,17 @@ export default function Inicio() {
                 <Link className="btn btn-contorno btn-lg" to="/mural">Ver o mapa</Link>
               </div>
               <div className="contadores" aria-label="Números do AchaPet">
-                <div className="perdidos"><strong>{numeros.ativos}</strong>procurando casa</div>
-                <div className="reencontrados"><strong>{numeros.reencontrados}</strong>já voltaram pra casa</div>
+                <div className="perdidos">
+                  <strong>{numeros.perdidos}</strong>{numeros.perdidos === 1 ? "perdido" : "perdidos"}
+                </div>
+                <div className="encontrados">
+                  <strong>{numeros.encontrados}</strong>{numeros.encontrados === 1 ? "encontrado" : "encontrados"}
+                </div>
+                <div className="reencontrados">
+                  <i className="bi bi-house-heart-fill" aria-hidden="true" />
+                  <strong>{numeros.reencontrados}</strong>
+                  {numeros.reencontrados === 1 ? "já voltou pra casa" : "já voltaram pra casa"}
+                </div>
               </div>
             </div>
             <div className="col-lg-6">

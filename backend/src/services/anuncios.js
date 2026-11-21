@@ -240,10 +240,19 @@ export function criarServicoAnuncios({ prisma, storage, geo, config }) {
     return lista.map(resumo);
   }
 
+  /** Números da página inicial: ativos por tipo e quantos já voltaram para casa. */
   async function estatisticas() {
-    const grupos = await prisma.anuncio.groupBy({ by: ["status"], _count: { _all: true } });
-    const total = (s) => grupos.find((g) => g.status === s)?._count._all ?? 0;
-    return { ativos: total("ativo"), reencontrados: total("reencontrado") };
+    const grupos = await prisma.anuncio.groupBy({ by: ["status", "tipo"], _count: { _all: true } });
+    const total = (status, tipo) =>
+      grupos
+        .filter((g) => g.status === status && (!tipo || g.tipo === tipo))
+        .reduce((soma, g) => soma + g._count._all, 0);
+    return {
+      perdidos: total("ativo", "perdido"),
+      encontrados: total("ativo", "encontrado"),
+      ativos: total("ativo"),
+      reencontrados: total("reencontrado"),
+    };
   }
 
   async function correspondencias(codigo) {
