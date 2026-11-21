@@ -144,6 +144,9 @@ export default function Mural() {
               ? "Carregando anúncios..."
               : erro ?? `${anuncios.length} anúncio(s) em ${filtros.raio} km. A posição no mapa é aproximada (cerca de 300 m).`}
           </p>
+          <Link className="small fw-semibold" to={`/alertas?lat=${centro[0].toFixed(5)}&lng=${centro[1].toFixed(5)}&raio=${filtros.raio}`}>
+            <i className="bi bi-bell" /> Receber e-mail quando aparecer anúncio nesta área
+          </Link>
           <div className="lista d-flex flex-column gap-2">
             {anuncios?.length === 0 && !erro && (
               <Vazio>

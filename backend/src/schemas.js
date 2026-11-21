@@ -137,3 +137,35 @@ export const coordenadasSchema = z.object({
   lat: z.coerce.number().min(-90).max(90),
   lng: z.coerce.number().min(-180).max(180),
 });
+
+// ---------------- alertas por região ----------------
+const opcionalEnum = (valores) =>
+  z
+    .enum(valores)
+    .optional()
+    .nullable()
+    .or(z.literal("").transform(() => null))
+    .transform((v) => v ?? null);
+
+export const alertaSchema = z.object({
+  latitude: z.coerce
+    .number({ error: "Marque o centro da área no mapa." })
+    .min(-34, "O local precisa estar no Brasil.")
+    .max(5.5, "O local precisa estar no Brasil."),
+  longitude: z.coerce
+    .number({ error: "Marque o centro da área no mapa." })
+    .min(-74, "O local precisa estar no Brasil.")
+    .max(-34, "O local precisa estar no Brasil."),
+  // O banco aceita de 500 m a 20 km (CHECK alerta_regiao_raio_ck).
+  raio_m: z.coerce
+    .number({ error: "Escolha o raio." })
+    .int()
+    .min(500, "O raio mínimo é 500 m.")
+    .max(20000, "O raio máximo é 20 km."),
+  especie: opcionalEnum(ESPECIES),
+  tipo: opcionalEnum(TIPOS),
+});
+
+export const alertaAtivoSchema = z.object({
+  ativo: z.boolean({ error: "Informe se o alerta está ativo." }),
+});

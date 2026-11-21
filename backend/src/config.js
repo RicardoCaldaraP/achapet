@@ -22,6 +22,17 @@ const esquema = z.object({
   CORS_ORIGIN: z.string().default("http://localhost:5173"),
   NOMINATIM_USER_AGENT: z.string().default("AchaPet/1.0 (projeto academico UVV)"),
 
+  // Endereço público do site, usado nos links dos e-mails. Na Netlify, se não for
+  // definido, usa a variável URL que a própria Netlify cria.
+  SITE_URL: z.string().default("http://localhost:5173"),
+
+  // E-mail dos alertas (SMTP). Opcional: sem isso os alertas só vão para o log.
+  SMTP_HOST: z.string().optional(),
+  SMTP_PORTA: z.coerce.number().default(587),
+  SMTP_USUARIO: z.string().optional(),
+  SMTP_SENHA: z.string().optional(),
+  EMAIL_REMETENTE: z.string().optional(),
+
   // Regras de negócio do MVP
   LIMITE_ANUNCIOS_POR_DIA: z.coerce.number().default(5),
   DIAS_VALIDADE_ANUNCIO: z.coerce.number().default(30),
@@ -29,7 +40,7 @@ const esquema = z.object({
 });
 
 export function carregarConfig(env = process.env) {
-  const resultado = esquema.safeParse(env);
+  const resultado = esquema.safeParse({ ...env, SITE_URL: env.SITE_URL || env.URL || undefined });
   if (!resultado.success) {
     const problemas = resultado.error.issues.map((i) => `- ${i.path.join(".")}: ${i.message}`);
     throw new Error(`Configuração inválida:\n${problemas.join("\n")}`);

@@ -3,7 +3,7 @@
  * ou buscar pelo CEP. Quando o ponto muda, pede o bairro à API (Nominatim).
  */
 import { useEffect, useState } from "react";
-import { MapContainer, Marker, TileLayer, useMap, useMapEvents } from "react-leaflet";
+import { Circle, MapContainer, Marker, TileLayer, useMap, useMapEvents } from "react-leaflet";
 import L from "leaflet";
 import { CENTRO_PADRAO } from "../lib/rotulos.js";
 import { buscarCep } from "../lib/geo.js";
@@ -20,15 +20,15 @@ function Cliques({ aoMarcar }) {
   return null;
 }
 
-function Centralizar({ alvo }) {
+function Centralizar({ alvo, zoom }) {
   const mapa = useMap();
   useEffect(() => {
-    if (alvo) mapa.setView(alvo, 16);
-  }, [alvo, mapa]);
+    if (alvo) mapa.setView(alvo, zoom);
+  }, [alvo, mapa, zoom]);
   return null;
 }
 
-export default function SeletorLocal({ latitude, longitude, aoMarcar, aoEncontrarEndereco }) {
+export default function SeletorLocal({ latitude, longitude, aoMarcar, aoEncontrarEndereco = () => {}, raioM, zoomPonto = 16 }) {
   const [status, setStatus] = useState("Ou toque no mapa para marcar o ponto. Você pode arrastar o marcador.");
   const [cep, setCep] = useState("");
   const [alvo, setAlvo] = useState(null);
@@ -83,11 +83,15 @@ export default function SeletorLocal({ latitude, longitude, aoMarcar, aoEncontra
         </div>
       </div>
       <p className="form-text mt-0" aria-live="polite">{status}</p>
-      <MapContainer id="mapa-form" center={temPonto ? [latitude, longitude] : CENTRO_PADRAO} zoom={temPonto ? 16 : 12}>
+      <MapContainer id="mapa-form" center={temPonto ? [latitude, longitude] : CENTRO_PADRAO} zoom={temPonto ? zoomPonto : 12}>
         <TileLayer url="https://tile.openstreetmap.org/{z}/{x}/{y}.png"
                    attribution='&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a>' />
         <Cliques aoMarcar={(lat, lng) => marcar(lat, lng)} />
-        <Centralizar alvo={alvo} />
+        <Centralizar alvo={alvo} zoom={zoomPonto} />
+        {temPonto && raioM && (
+          <Circle center={[latitude, longitude]} radius={raioM}
+                  pathOptions={{ color: "#d97b26", weight: 2, fillOpacity: 0.08 }} />
+        )}
         {temPonto && (
           <Marker position={[latitude, longitude]} icon={iconePino} draggable
                   eventHandlers={{ dragend: (e) => { const p = e.target.getLatLng(); marcar(p.lat, p.lng); } }} />

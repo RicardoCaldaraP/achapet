@@ -49,6 +49,16 @@ export const geoFalso = {
   },
 };
 
+/** E-mail falso: guarda as mensagens "enviadas" para conferir nos testes. */
+export const emailFalso = {
+  configurado: true,
+  enviados: [],
+  async enviar(mensagem) {
+    this.enviados.push(mensagem);
+    return true;
+  },
+};
+
 export const app = createApp({
   config,
   prisma,
@@ -56,6 +66,7 @@ export const app = createApp({
   storage: storageFalso,
   logger: criarLogger({ ambiente: "test" }),
   geo: geoFalso,
+  email: emailFalso,
 });
 
 /** Cadastra um usuário pela API e devolve { id, token, ... }. */
@@ -114,6 +125,7 @@ export function limparBancoAposCadaTeste() {
       "TRUNCATE usuario, anuncio, foto, anuncio_cor, denuncia, avistamento, alerta_regiao RESTART IDENTITY CASCADE",
     );
     storageFalso.removidos.length = 0;
+    emailFalso.enviados.length = 0;
   });
   afterAll(async () => {
     await prisma.$disconnect();

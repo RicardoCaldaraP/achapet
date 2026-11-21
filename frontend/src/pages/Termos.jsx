@@ -12,7 +12,9 @@ export default function Termos() {
     
       <h2 className="h3 mt-4">Que dados coletamos</h2>
       <p>Só o necessário para o contato entre quem perdeu e quem encontrou: nome, e-mail, telefone e a data em que você aceitou
-      estes termos. Nos anúncios guardamos as informações do animal, as fotos e o local informado.</p>
+      estes termos. Nos anúncios guardamos as informações do animal, as fotos e o local informado. Se você criar um
+      alerta, guardamos a área escolhida e usamos seu e-mail só para avisar sobre anúncios novos nela; o alerta pode ser
+      pausado ou excluído a qualquer momento.</p>
     
       <h2 className="h3 mt-4">Como protegemos você</h2>
       <ul>
@@ -24,7 +26,7 @@ export default function Termos() {
     
       <h2 className="h3 mt-4">Seus direitos (LGPD)</h2>
       <p>Você pode editar seus dados a qualquer momento em "Minha conta" e excluir a conta. A exclusão apaga
-      definitivamente seus dados, seus anúncios e as fotos.</p>
+      definitivamente seus dados, seus anúncios, as fotos e os alertas.</p>
     
       <h2 className="h3 mt-4">Regras de uso</h2>
       <ul>
@@ -34,7 +36,7 @@ export default function Termos() {
         <li>Limite de 5 anúncios por pessoa a cada 24 horas.</li>
       </ul>
     
-      <p className="texto-suave mt-4">Mapas © colaboradores do OpenStreetMap.</p>
+      <p className="texto-suave mt-4">Mapas © colaboradores do OpenStreetMap. Fotos dos anúncios de demonstração: Wikimedia Commons, com licenças livres.</p>
     </div>
   );
 }

@@ -33,6 +33,7 @@ export default function Layout() {
             <ul className="navbar-nav me-auto">
               <li className="nav-item"><NavLink className="nav-link" to="/mural">Mural</NavLink></li>
               {logado && <li className="nav-item"><NavLink className="nav-link" to="/meus-anuncios">Meus anúncios</NavLink></li>}
+              {logado && <li className="nav-item"><NavLink className="nav-link" to="/alertas">Alertas</NavLink></li>}
               {ehModerador && <li className="nav-item"><NavLink className="nav-link" to="/moderacao">Moderação</NavLink></li>}
             </ul>
             <div className="d-flex flex-column flex-lg-row gap-2 py-2 py-lg-0">
@@ -44,6 +45,7 @@ export default function Layout() {
                   </button>
                   <ul className="dropdown-menu dropdown-menu-end">
                     <li><Link className="dropdown-item" to="/conta">Minha conta</Link></li>
+                    <li><Link className="dropdown-item" to="/alertas">Alertas da minha região</Link></li>
                     <li><hr className="dropdown-divider" /></li>
                     <li><button className="dropdown-item" type="button" onClick={fazerLogout}>Sair</button></li>
                   </ul>

@@ -15,6 +15,7 @@ const Entrar = lazy(() => import("./pages/Entrar.jsx"));
 const Cadastro = lazy(() => import("./pages/Cadastro.jsx"));
 const Conta = lazy(() => import("./pages/Conta.jsx"));
 const Moderacao = lazy(() => import("./pages/Moderacao.jsx"));
+const Alertas = lazy(() => import("./pages/Alertas.jsx"));
 const Termos = lazy(() => import("./pages/Termos.jsx"));
 const NaoEncontrado = lazy(() => import("./pages/NaoEncontrado.jsx"));
 
@@ -34,6 +35,7 @@ export default function App() {
           <Route path="a/:codigo/editar" element={<RotaProtegida><FormAnuncio /></RotaProtegida>} />
           <Route path="meus-anuncios" element={<RotaProtegida><MeusAnuncios /></RotaProtegida>} />
           <Route path="conta" element={<RotaProtegida><Conta /></RotaProtegida>} />
+          <Route path="alertas" element={<RotaProtegida><Alertas /></RotaProtegida>} />
           <Route path="moderacao" element={<RotaProtegida moderador><Moderacao /></RotaProtegida>} />
           <Route path="*" element={<NaoEncontrado />} />
         </Route>

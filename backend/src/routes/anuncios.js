@@ -6,7 +6,7 @@ import { validar } from "../middlewares.js";
 
 export function rotasAnuncios({ servicos, exigirLogin, loginOpcional }) {
   const r = Router();
-  const { anuncios, moderacao } = servicos;
+  const { anuncios, moderacao, alertas } = servicos;
 
   /** Carrega o anúncio do :codigo em req.anuncio (404 se não existe). */
   async function carregar(req, res, next) {
@@ -43,6 +43,8 @@ export function rotasAnuncios({ servicos, exigirLogin, loginOpcional }) {
   r.post("/", exigirLogin, validar(schemaDoUsuario), async (req, res) => {
     const anuncio = await anuncios.criar(req.usuario, req.dados);
     req.log?.info({ codigo: anuncio.codigo, tipo: anuncio.tipo }, "anúncio publicado");
+    // Avisa por e-mail quem tem alerta na região. Uma falha aqui não desfaz a publicação.
+    await alertas.notificarNovoAnuncio(anuncio).catch((erro) => req.log?.error({ err: erro }, "falha nos alertas"));
     res.status(201).json(anuncios.apresentar(anuncio, req.usuario));
   });
 

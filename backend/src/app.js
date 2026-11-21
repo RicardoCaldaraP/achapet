@@ -18,12 +18,15 @@ import { criarServicoAnuncios } from "./services/anuncios.js";
 import { criarServicoUsuarios } from "./services/usuarios.js";
 import { criarServicoModeracao } from "./services/moderacao.js";
 import { criarServicoGeo } from "./services/geo.js";
+import { criarServicoAlertas } from "./services/alertas.js";
+import { criarServicoEmail } from "./lib/email.js";
 import { rotasAnuncios } from "./routes/anuncios.js";
 import { rotasUsuarios } from "./routes/usuarios.js";
 import { rotasModeracao } from "./routes/moderacao.js";
 import { rotasGerais } from "./routes/geral.js";
+import { rotasAlertas } from "./routes/alertas.js";
 
-export function createApp({ config, prisma, auth, storage, logger, geo }) {
+export function createApp({ config, prisma, auth, storage, logger, geo, email }) {
   const app = express();
 
   // ---------- serviços (regras de negócio) ----------
@@ -33,6 +36,8 @@ export function createApp({ config, prisma, auth, storage, logger, geo }) {
   servicos.anuncios = criarServicoAnuncios({ prisma, storage, geo: servicos.geo, config });
   servicos.usuarios = criarServicoUsuarios({ prisma, auth, storage });
   servicos.moderacao = criarServicoModeracao({ prisma });
+  servicos.email = email ?? criarServicoEmail({ config, logger });
+  servicos.alertas = criarServicoAlertas({ prisma, email: servicos.email, config, logger });
 
   // ---------- middlewares globais ----------
   app.set("trust proxy", 1);
@@ -53,6 +58,7 @@ export function createApp({ config, prisma, auth, storage, logger, geo }) {
   app.use("/api/usuarios", rotasUsuarios(deps));
   app.use("/api/anuncios", rotasAnuncios(deps));
   app.use("/api/moderacao", rotasModeracao(deps));
+  app.use("/api/alertas", rotasAlertas(deps));
 
   // ---------- erros ----------
   app.use(naoEncontrado);
