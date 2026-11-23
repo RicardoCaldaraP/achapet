@@ -22,8 +22,9 @@ Projeto final de **Desenvolvimento de Sistemas para Web (UVV)**.
    automática após 30 dias.
 
 Complementares implementados: **alertas por e-mail** de anúncios novos numa área escolhida no mapa, detalhe
-oculto (só o autor vê) e selo de ONG/protetor verificado. A página inicial mostra os **indicadores do piloto**:
-anúncios publicados, taxa de reencontro e tempo médio do sumiço até o reencontro.
+oculto (só o autor vê) e selo de ONG/protetor verificado. Os **indicadores do piloto** (anúncios publicados, taxa de
+reencontro e tempo médio do sumiço até o reencontro) são calculados pela API em `GET /api/anuncios/estatisticas`,
+para acompanhar o piloto quando houver dados reais.
 O app é um **PWA** instalável no celular.
 
 ## Tecnologias
